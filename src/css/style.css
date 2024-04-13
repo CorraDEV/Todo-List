@@ -26,7 +26,11 @@ body{
 
 #sidebar{
     width: 10%;    
-    background-color: blue;
+    background-color: red;
+}
+
+#sidebarTitle{
+    text-align: center;
 }
 
 #projectBox{
