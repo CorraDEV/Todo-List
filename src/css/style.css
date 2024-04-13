@@ -1,0 +1,38 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    display: flex;
+    min-height: 100vh;    
+}
+
+.todoTitle{
+    text-align: center;
+}
+
+.todoBox{
+    max-width: 20em;
+}
+
+.todoDesc{
+    text-align: justify;
+}
+
+.todoCheck{
+    float: right;
+}
+
+#sidebar{
+    width: 10%;    
+    background-color: blue;
+}
+
+#projectBox{
+    width: 90%;
+}
+
+#projectTitle{
+    text-align: center;
+}
