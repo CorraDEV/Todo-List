@@ -1,4 +1,4 @@
-import renderTodo from "./renderTodo";
+import addTodo from "./addTodo";
 
 export default function renderProject(){
     const projectBox = document.createElement('div');
@@ -8,7 +8,10 @@ export default function renderProject(){
     projectTitle.textContent = "Example Project";
     const projectTodos = document.createElement('div');
     projectTodos.id = 'projectTodos';
-    projectBox.append(projectTitle, projectTodos);    
+    const add_todo = document.createElement('button');
+    add_todo.id = "add_todo_btn";
+    add_todo.textContent = "Add Todo";
+    projectBox.append(projectTitle, add_todo, projectTodos);    
     document.body.appendChild(projectBox);
-    renderTodo({});
+    addTodo({});    
 }
