@@ -40,3 +40,8 @@ body{
 #projectTitle{
     text-align: center;
 }
+
+#projectTodos{
+    display: flex;
+    flex-wrap: wrap;
+}

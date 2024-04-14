@@ -1,4 +1,4 @@
-class Todo{
+export default class Todo{
 	constructor(title, desc, due_date, prio, check){
     	this.title = title;
         this.desc = desc;

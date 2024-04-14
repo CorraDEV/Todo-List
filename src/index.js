@@ -1,4 +1,3 @@
 import "./css/style.css";
-import renderSidebar from "./functions/renderSidebar.js";
-
-renderSidebar();
+import renderPage from "./js/renderPage";
+renderPage();
