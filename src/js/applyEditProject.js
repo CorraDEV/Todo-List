@@ -4,5 +4,5 @@ export default function applyEditProject(projectEdit){
     const projectEditName = projectEdit.querySelector('.projectEditName');          
     projectName.textContent = projectEditName.value;        
     project.style.display = 'block';
-    projectEdit.style.display = 'none'; 
+    projectEdit.remove(); 
 }

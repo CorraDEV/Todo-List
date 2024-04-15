@@ -1,5 +1,6 @@
 import first_src from '../img/bin.png';
 import second_src from '../img/pencil.png';
+import editProject from './editProject';
 
 export default function addProject(){    
     const project = document.createElement('div');
@@ -15,5 +16,5 @@ export default function addProject(){
     second_icon.src = second_src;
     const add_project = document.querySelector('#add_project_btn');        
     add_project.parentNode.insertBefore(project, add_project);
-    project.append(project_name, first_icon, second_icon);
+    project.append(project_name, first_icon, second_icon);    
 }

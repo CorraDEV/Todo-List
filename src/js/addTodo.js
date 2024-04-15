@@ -1,5 +1,6 @@
 import first_src from '../img/bin.png';
 import second_src from '../img/pencil.png';
+import editTodo from './editTodo';
 
 export default function addTodo(
     {
@@ -31,5 +32,5 @@ export default function addTodo(
     todoCheck.textContent = check;   
     todoBox.append(todoTitle, first_icon, second_icon, todoDesc, todoDate, todoCheck);
     const projectTodos = document.querySelector('#projectTodos');
-    projectTodos.appendChild(todoBox);
+    projectTodos.appendChild(todoBox);    
 }
