@@ -1,4 +1,4 @@
-import addProject from "./addProject";
+import TodoList from "./TodoList";
 
 export default function renderSidebar(){
     const sidebar = document.createElement('div');
@@ -11,5 +11,5 @@ export default function renderSidebar(){
     add_project.textContent = "Add Project";
     sidebar.append(sidebar_title, add_project);    
     document.body.append(sidebar);
-    addProject();
+    TodoList.addProject();
 }

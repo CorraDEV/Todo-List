@@ -1,7 +1,7 @@
 import renderSidebar from "./renderSidebar.js";
-import renderProject from "./renderProject.js";
+import TodoList from "./TodoList.js";
 
 export default function renderPage(){
     renderSidebar();
-    renderProject();
+    TodoList.renderProject({});
 }
