@@ -91,7 +91,7 @@ export default class Project{
         todo.style.display = 'block';
         todoEdit.remove(); 
         const todo_id = todo.id;
-        const projectID = todo.parentNode.getAttribute('data-projectid');      
+        const projectID = todo.parentNode.getAttribute('data-projectid');              
         TodoList.projects[projectID].todos[todo_id].title = todoTitle.textContent;
         TodoList.projects[projectID].todos[todo_id].desc = todoDesc.textContent;
         TodoList.projects[projectID].todos[todo_id].due_date = todoDate.textContent;        

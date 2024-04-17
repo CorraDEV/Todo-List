@@ -3,7 +3,7 @@ import first_src from '../img/bin.png';
 import second_src from '../img/pencil.png';
 
 export default class TodoList{
-    static projects = [];        
+    static projects = [];            
 
     static renderProject(){
         const projectBox = document.createElement('div');
@@ -70,7 +70,38 @@ export default class TodoList{
         this.projects[project_id].title = projectName.textContent;
     }
     
-    static changeProject(project){
-        
+    static changeProject(project){                
+        console.log(this.projects);
+        const projectTodos = document.querySelector('#projectTodos');
+        projectTodos.dataset.projectid = project.id;  
+        projectTodos.innerHTML = "";
+        const todos = this.projects[projectTodos.dataset.projectid].todos;
+        let todoIndex = 0;
+        for(const todo of todos){
+            const todoBox = document.createElement('div');
+            todoBox.classList.add('todoBox');                                        
+            todoBox.id = todoIndex;            
+            const todoTitle = document.createElement('h3');
+            todoTitle.textContent = todo.title;    
+            todoTitle.classList.add('todoTitle');        
+            const first_icon = document.createElement('img');
+            first_icon.classList.add('projectIcon', 'bin');
+            first_icon.src = first_src;
+            const second_icon = document.createElement('img');
+            second_icon.classList.add('projectIcon', 'pencil');
+            second_icon.src = second_src;
+            const todoDesc = document.createElement('p');
+            todoDesc.classList.add('todoDesc');
+            todoDesc.textContent = todo.desc;
+            const todoDate = document.createElement('span');
+            todoDate.classList.add('todoDate');    
+            todoDate.textContent = todo.due_date;            
+            const todoCheck = document.createElement('span');                    
+            todoCheck.classList.add('todoCheck');    
+            todoCheck.textContent = todo.check;   
+            todoBox.append(todoTitle, first_icon, second_icon, todoDesc, todoDate, todoCheck);        
+            projectTodos.appendChild(todoBox);                
+            todoIndex++;
+        }       
     }
 }
