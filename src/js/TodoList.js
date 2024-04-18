@@ -22,6 +22,13 @@ export default class TodoList{
         Project.addTodo({});    
     }
 
+    static deleteProject(project){        
+        const projectTodos = document.querySelector('#projectTodos');
+        this.projects.splice(project.id, 1);                
+        project.remove(); 
+        projectTodos.innerHTML = '';        
+    }
+
     static addProject(){
         const project = document.createElement('div');
         project.classList.add('project');
@@ -67,11 +74,10 @@ export default class TodoList{
         project.style.display = 'block';
         projectEdit.remove();
         const project_id = project.id;
-        this.projects[project_id].title = projectName.textContent;
+        this.projects[project_id].title = projectName.textContent;        
     }
     
-    static changeProject(project){                
-        console.log(this.projects);
+    static changeProject(project){                                
         const projectTodos = document.querySelector('#projectTodos');
         projectTodos.dataset.projectid = project.id;  
         projectTodos.innerHTML = "";

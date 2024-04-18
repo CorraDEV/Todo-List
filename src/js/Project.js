@@ -10,6 +10,12 @@ export default class Project{
         this.todos = [];                        
     }            
     
+    static deleteTodo(todo){                
+        const projectID = todo.parentNode.getAttribute('data-projectid');
+        TodoList.projects[projectID].todos.splice(todo.id, 1);        
+        todo.remove();        
+    }
+
     static addTodo(
         {
             title = 'Title',
@@ -21,7 +27,7 @@ export default class Project{
         const todoBox = document.createElement('div');
         todoBox.classList.add('todoBox');        
         const projectTodos = document.querySelector('#projectTodos');
-        const projectID = projectTodos.getAttribute('data-projectid');                 
+        const projectID = projectTodos.getAttribute('data-projectid');                         
         const todoBox_id = TodoList.projects[projectID].todos.length;
         todoBox.id = todoBox_id;
         const todoTitle = document.createElement('h3');

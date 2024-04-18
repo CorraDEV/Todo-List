@@ -2,7 +2,6 @@ import "./css/style.css";
 import renderPage from "./js/renderPage.js";
 import Project from "./js/Project.js";
 import TodoList from "./js/TodoList.js";
-import Todo from "./js/todo.js";
 
 renderPage();
 const sidebar = document.querySelector("#sidebar");
@@ -12,8 +11,36 @@ sidebar.addEventListener("click", function(evt){
         TodoList.editProject(evt.target.previousElementSibling);
     }    
     else if(evt.target.classList.contains('bin')){
-        evt.target.parentNode.remove();
-    }
+        const projectSidebarID = evt.target.parentNode.id;        
+        let previousProjectSidebar = undefined;
+        
+        if(projectSidebarID > 0){
+            previousProjectSidebar = evt.target.parentNode.previousElementSibling;        
+        }               
+        const nextProjectSidebar = evt.target.parentNode.nextElementSibling;
+        TodoList.deleteProject(evt.target.parentNode);                                        
+        
+        if(nextProjectSidebar.id != 'add_project_btn'){
+            nextProjectSidebar.id = nextProjectSidebar.id - 1;
+            let ele = nextProjectSidebar;
+            do{            
+                ele = ele.nextElementSibling; 
+                if(ele.id != 'add_project_btn'){
+                    ele.id = ele.id - 1; 
+                }            
+            }
+            while(ele.id != 'add_project_btn');                    
+        }                                                
+        
+        if(TodoList.projects.length >= 1){
+            if(previousProjectSidebar){
+                TodoList.changeProject(previousProjectSidebar);        
+            }
+            else{
+                TodoList.changeProject(nextProjectSidebar);        
+            }
+        }        
+    }            
     else if(evt.target.classList.contains('pencil')){         
         TodoList.editProject(evt.target.parentNode);
         const button = evt.target.parentNode.previousElementSibling.querySelector('.editProjectName');
@@ -21,12 +48,13 @@ sidebar.addEventListener("click", function(evt){
     }
     else if(evt.target.classList.contains('editProjectName')){        
         if(evt.target.dataset.editOnly == 'Yes'){
-            TodoList.applyEditProject(evt.target.parentNode);    
+            TodoList.applyEditProject(evt.target.parentNode);                    
         }
         else{
-            const project = evt.target.parentNode.nextElementSibling;
+            const nextProject = evt.target.parentNode.nextElementSibling;
             TodoList.applyEditProject(evt.target.parentNode);            
-            TodoList.changeProject(project);
+            TodoList.changeProject(nextProject);
+            Project.addTodo({});
         }                                
     }
     else if(evt.target.classList.contains('project') || evt.target.classList.contains('projectName')){
@@ -46,7 +74,7 @@ project_box.addEventListener("click", function(evt){
         Project.editTodo(evt.target.nextElementSibling.lastChild);
     }
     else if(evt.target.classList.contains('bin')){
-        evt.target.parentNode.remove();
+        Project.deleteTodo(evt.target.parentNode);              
     }
     else if(evt.target.classList.contains('pencil')){
         Project.editTodo(evt.target.parentNode);
