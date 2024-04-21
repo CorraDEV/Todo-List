@@ -5,9 +5,9 @@ import Todo from './todo';
 import { format, parse } from "date-fns";
 
 export default class Project{        
-    constructor(title){        
+    constructor(title = 'Titolo Progetto', todos = []){        
         this.title = title;
-        this.todos = [];                        
+        this.todos = todos;                        
     }            
     
     static deleteTodo(todo){                
@@ -16,20 +16,12 @@ export default class Project{
         todo.remove();        
     }
 
-    static addTodo(
-        {
-            title = 'Title',
-            desc = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae, libero similique rerum minima est asperiores repellat harum odit inventore ipsa nam suscipit fuga eos officia tempora sint, aliquid ipsum dicta!',
-            due_date = '21-12-2012',
-            check = 'SI'
-        }
-    ){
+    static renderTodo({title, desc, due_date, prio, check}){
         const todoBox = document.createElement('div');
-        todoBox.classList.add('todoBox');        
-        const projectTodos = document.querySelector('#projectTodos');
-        const projectID = projectTodos.getAttribute('data-projectid');                         
-        const todoBox_id = TodoList.projects[projectID].todos.length;
-        todoBox.id = todoBox_id;
+        todoBox.classList.add('todoBox');
+        const projectTodos = document.querySelector('#projectTodos');                        
+        const projectID = projectTodos.getAttribute('data-projectid');        
+        todoBox.id = TodoList.projects[projectID].todos.length - 1;                                
         const todoTitle = document.createElement('h3');
         todoTitle.textContent = title;    
         todoTitle.classList.add('todoTitle');        
@@ -41,32 +33,37 @@ export default class Project{
         second_icon.src = second_src;
         const todoDesc = document.createElement('p');
         todoDesc.classList.add('todoDesc');
-        todoDesc.textContent = desc;
+        todoDesc.textContent = desc;        
         const todoDate = document.createElement('span');
         todoDate.classList.add('todoDate');    
         todoDate.textContent = due_date;            
-        const todoCheck = document.createElement('span');                    
-        todoCheck.classList.add('todoCheck');    
-        todoCheck.textContent = check;   
+        const todoCheck = document.createElement('input');
+        todoCheck.type = 'checkbox';
+        todoCheck.checked = check;
+        todoCheck.classList.add('todoCheck');            
         todoBox.append(todoTitle, first_icon, second_icon, todoDesc, todoDate, todoCheck);        
-        projectTodos.appendChild(todoBox);        
-        const todoObj = new Todo(title, desc, due_date, check);        
-        TodoList.projects[projectID].todos.push(todoObj);        
+        projectTodos.appendChild(todoBox);                                    
     }
     
-    static editTodo(todo){
+    static editTodo(todo){        
         todo.style.display = 'none';
         const todoEdit = document.createElement('div');
         todoEdit.classList.add('todoEdit');    
+        const labelTitle = document.createElement('label');        
+        labelTitle.textContent = 'Title: ';
         const todoEditTitle = document.createElement('input');
         todoEditTitle.classList.add('todoEditTitle');
         todoEditTitle.type = 'text';
         const todoTitle = todo.querySelector('.todoTitle');
         todoEditTitle.value = todoTitle.textContent;
+        const labelDesc = document.createElement('label');        
+        labelDesc.textContent = 'Description: ';
         const todoEditDesc = document.createElement('textarea');
         todoEditDesc.classList.add('todoEditDesc');    
         const todoDesc = todo.querySelector('.todoDesc');
         todoEditDesc.textContent = todoDesc.textContent;    
+        const labelDate = document.createElement('label');        
+        labelDate.textContent = 'Date: ';
         const todoEditDate = document.createElement('input');
         todoEditDate.classList.add('todoEditDate');
         todoEditDate.type = 'date';
@@ -74,10 +71,35 @@ export default class Project{
         const todoDateFormatted = parse(todoDate.textContent, 'dd-MM-yyyy', new Date());
         const todoDateFormattedUSA = format(todoDateFormatted, "yyyy-MM-dd");    
         todoEditDate.value = todoDateFormattedUSA;
+        const labelPrio = document.createElement('label');        
+        labelPrio.textContent = 'Priority: ';
+        const todoEditPrio = document.createElement('select');        
+        todoEditPrio.classList.add('todoEditPrio');
+        const projectID = todo.parentNode.getAttribute('data-projectid');                
+        const prioValue = TodoList.projects[projectID].todos[todo.id].prio;        
+        const highPrio = document.createElement('option');
+        highPrio.value = 'high';
+        highPrio.textContent = 'High';
+        const mediumPrio = document.createElement('option');
+        mediumPrio.value = 'medium';
+        mediumPrio.textContent = 'Medium';
+        const lowPrio = document.createElement('option');
+        lowPrio.value = 'low';
+        lowPrio.textContent = 'Low';
+        if(prioValue == 'low'){
+            lowPrio.selected = true;
+        }
+        else if(prioValue == 'medium'){
+            mediumPrio.selected = true;
+        }
+        else if(prioValue == 'high'){
+            highPrio.selected = true;
+        }
+        todoEditPrio.append(highPrio, mediumPrio, lowPrio);
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
         editButton.classList.add('editTodo');
-        todoEdit.append(todoEditTitle, todoEditDesc, todoEditDate, editButton);
+        todoEdit.append(labelTitle, todoEditTitle, labelDesc, todoEditDesc, labelPrio, todoEditPrio, labelDate, todoEditDate, editButton);
         todo.parentNode.insertBefore(todoEdit, todo);
     }    
 
@@ -94,12 +116,25 @@ export default class Project{
         const todoEditDateUSA = todoEdit.querySelector('.todoEditDate');          
         const todoEditDateFormatted = format(todoEditDateUSA.value, "dd-MM-yyyy");    
         todoDate.textContent = todoEditDateFormatted;        
-        todo.style.display = 'block';
-        todoEdit.remove(); 
-        const todo_id = todo.id;
+        const todoEditPrio = todoEdit.querySelector('.todoEditPrio');        
+        todo.style.display = 'block';                 
         const projectID = todo.parentNode.getAttribute('data-projectid');              
-        TodoList.projects[projectID].todos[todo_id].title = todoTitle.textContent;
-        TodoList.projects[projectID].todos[todo_id].desc = todoDesc.textContent;
-        TodoList.projects[projectID].todos[todo_id].due_date = todoDate.textContent;        
+        TodoList.projects[projectID].todos[todo.id].title = todoTitle.textContent;
+        TodoList.projects[projectID].todos[todo.id].desc = todoDesc.textContent;
+        TodoList.projects[projectID].todos[todo.id].prio = todoEditPrio.value;        
+        TodoList.projects[projectID].todos[todo.id].due_date = todoDate.textContent;        
+        todoEdit.remove();
+    }
+
+    static checkTodo(todo){        
+        const projectID = todo.parentNode.getAttribute('data-projectid');              
+        let todoCheckValue = TodoList.projects[projectID].todos[todo.id].check;
+        if(todoCheckValue == false){
+            todoCheckValue = true;
+        }
+        else{
+            todoCheckValue = false;
+        }
+        TodoList.projects[projectID].todos[todo.id].check = todoCheckValue;
     }
 }

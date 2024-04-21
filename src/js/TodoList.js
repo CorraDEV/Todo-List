@@ -1,26 +1,8 @@
-import Project from './Project';
 import first_src from '../img/bin.png';
 import second_src from '../img/pencil.png';
 
 export default class TodoList{
-    static projects = [];            
-
-    static renderProject(){
-        const projectBox = document.createElement('div');
-        projectBox.id = 'projectBox';         
-        const projectTitle = document.createElement('h1');
-        projectTitle.id = 'projectTitle';
-        projectTitle.textContent = "Example Project";
-        const projectTodos = document.createElement('div');
-        projectTodos.id = 'projectTodos';
-        projectTodos.dataset.projectid = this.projects.length - 1;        
-        const add_todo = document.createElement('button');
-        add_todo.id = "add_todo_btn";
-        add_todo.textContent = "Add Todo";
-        projectBox.append(projectTitle, add_todo, projectTodos);    
-        document.body.appendChild(projectBox);        
-        Project.addTodo({});    
-    }
+    static projects = [];                
 
     static deleteProject(project){        
         const projectTodos = document.querySelector('#projectTodos');
@@ -29,13 +11,12 @@ export default class TodoList{
         projectTodos.innerHTML = '';        
     }
 
-    static addProject(){
+    static renderSidebarProject({title}){        
         const project = document.createElement('div');
         project.classList.add('project');
-        const project_id = this.projects.length;
-        project.id = project_id;        
+        project.id = this.projects.length - 1;         
         const project_name = document.createElement('span');
-        project_name.textContent = 'titolo progetto';
+        project_name.textContent = title;
         project_name.classList.add('projectName');
         const first_icon = document.createElement('img');
         first_icon.classList.add('projectIcon', 'bin');
@@ -45,9 +26,7 @@ export default class TodoList{
         second_icon.src = second_src;
         const add_project = document.querySelector('#add_project_btn');
         add_project.parentNode.insertBefore(project, add_project);
-        project.append(project_name, first_icon, second_icon);
-        const projectObj = new Project(project_name.textContent);        
-        this.projects.push(projectObj);        
+        project.append(project_name, first_icon, second_icon);        
     }
     
     static editProject(project){
@@ -72,15 +51,18 @@ export default class TodoList{
         const projectEditName = projectEdit.querySelector('.projectEditName');          
         projectName.textContent = projectEditName.value;        
         project.style.display = 'block';
-        projectEdit.remove();
-        const project_id = project.id;
-        this.projects[project_id].title = projectName.textContent;        
+        projectEdit.remove();                           
+        this.projects[project.id].title = projectName.textContent;
+        const projectTitle = document.querySelector('#projectBox > #projectTitle');         
+        projectTitle.textContent = this.projects[project.id].title;        
     }
     
     static changeProject(project){                                
         const projectTodos = document.querySelector('#projectTodos');
         projectTodos.dataset.projectid = project.id;  
         projectTodos.innerHTML = "";
+        const projectTitle = document.querySelector('#projectBox > #projectTitle');         
+        projectTitle.textContent = this.projects[projectTodos.dataset.projectid].title;        
         const todos = this.projects[projectTodos.dataset.projectid].todos;
         let todoIndex = 0;
         for(const todo of todos){
@@ -102,9 +84,15 @@ export default class TodoList{
             const todoDate = document.createElement('span');
             todoDate.classList.add('todoDate');    
             todoDate.textContent = todo.due_date;            
-            const todoCheck = document.createElement('span');                    
-            todoCheck.classList.add('todoCheck');    
-            todoCheck.textContent = todo.check;   
+            const todoCheck = document.createElement('input');                    
+            todoCheck.type = 'checkbox';
+            todoCheck.classList.add('todoCheck');            
+            if(todo.check == false){
+                todoCheck.checked = false;
+            }
+            else{
+                todoCheck.checked = true;
+            }
             todoBox.append(todoTitle, first_icon, second_icon, todoDesc, todoDate, todoCheck);        
             projectTodos.appendChild(todoBox);                
             todoIndex++;
