@@ -6,12 +6,14 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack serve",
-    "gitpage": "git subtree push --prefix dist origin gh-pages"
+    "gitpage": "git subtree push --prefix dist origin gh-pages",
+    "deploy": "gh-pages -d dist"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "css-loader": "^7.1.1",
+    "gh-pages": "^6.1.1",
     "html-webpack-plugin": "^5.6.0",
     "style-loader": "^4.0.0",
     "webpack": "^5.91.0",
