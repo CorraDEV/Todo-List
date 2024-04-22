@@ -4,11 +4,17 @@ import second_src from '../img/pencil.png';
 export default class TodoList{
     static projects = [];                
 
-    static deleteProject(project){        
+    static deleteProject(project){                
         const projectTodos = document.querySelector('#projectTodos');
+        const projectBox = document.querySelector('#projectBox');
         this.projects.splice(project.id, 1);                
         project.remove(); 
-        projectTodos.innerHTML = '';        
+        if(this.projects.length > 0){
+            projectTodos.innerHTML = '';
+        }        
+        else{
+            projectBox.style.display = 'none';
+        }
     }
 
     static renderSidebarProject({title}){        
@@ -53,11 +59,13 @@ export default class TodoList{
         project.style.display = 'block';
         projectEdit.remove();                           
         this.projects[project.id].title = projectName.textContent;
+        const projectBox = document.querySelector('#projectBox');         
+        projectBox.style.display = 'block';
         const projectTitle = document.querySelector('#projectBox > #projectTitle');         
         projectTitle.textContent = this.projects[project.id].title;        
     }
     
-    static changeProject(project){                                
+    static moveToProject(project){                                
         const projectTodos = document.querySelector('#projectTodos');
         projectTodos.dataset.projectid = project.id;  
         projectTodos.innerHTML = "";

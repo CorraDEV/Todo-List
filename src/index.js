@@ -1,21 +1,27 @@
 import "./css/style.css";
 import renderPage from "./js/renderPage.js";
+import recoverPage from "./js/recoverPage.js";
 import Project from "./js/Project.js";
 import TodoList from "./js/TodoList.js";
 import Todo from "./js/todo.js";
 
-renderPage();
+if(localStorage.getItem("projects")){
+    recoverPage();    
+}
+else{
+    renderPage();
+}
 
 const sidebar = document.querySelector("#sidebar");
-sidebar.addEventListener("click", function(evt){    
-    if(evt.target.id == 'add_project_btn'){        
+sidebar.addEventListener("click", function(evt){            
+    if(evt.target.id == 'add_project_btn'){                        
         TodoList.projects.push(new Project());
         TodoList.renderSidebarProject(new Project());                        
-        TodoList.editProject(evt.target.previousElementSibling);        
+        TodoList.editProject(evt.target.previousElementSibling);                                
     }    
     else if(evt.target.classList.contains('bin')){
         const projectSidebarID = evt.target.parentNode.id;        
-        let previousProjectSidebar = undefined;
+        let previousProjectSidebar = null;
         
         if(projectSidebarID > 0){
             previousProjectSidebar = evt.target.parentNode.previousElementSibling;        
@@ -35,12 +41,12 @@ sidebar.addEventListener("click", function(evt){
             while(ele.id != 'add_project_btn');                    
         }                                                
         
-        if(TodoList.projects.length >= 1){
+        if(TodoList.projects.length > 0){
             if(previousProjectSidebar){
-                TodoList.changeProject(previousProjectSidebar);        
+                TodoList.moveToProject(previousProjectSidebar);        
             }
             else{
-                TodoList.changeProject(nextProjectSidebar);        
+                TodoList.moveToProject(nextProjectSidebar);        
             }            
         }                
     }            
@@ -56,23 +62,28 @@ sidebar.addEventListener("click", function(evt){
         else{
             const nextProject = evt.target.parentNode.nextElementSibling;
             TodoList.applyEditProject(evt.target.parentNode);            
-            TodoList.changeProject(nextProject);                        
-            Project.renderTodo({});
+            TodoList.moveToProject(nextProject);                        
+            TodoList.projects[nextProject.id].todos.push(new Todo());
+            Project.renderTodo(new Todo());
         }        
     }
     else if(evt.target.classList.contains('project') || evt.target.classList.contains('projectName')){
         if(evt.target.classList.contains('project')){
-            TodoList.changeProject(evt.target);
+            TodoList.moveToProject(evt.target);
         }
         else{
-            TodoList.changeProject(evt.target.parentNode);
+            TodoList.moveToProject(evt.target.parentNode);
         }          
     }
+    
+    let currentProjectID = document.querySelector('#projectTodos').getAttribute('data-projectid'); 
+    localStorage.setItem('projects', JSON.stringify(TodoList.projects));
+    localStorage.setItem('currentProjectID', currentProjectID);
 });
 
 const project_box = document.querySelector("#projectBox");
-project_box.addEventListener("click", function(evt){    
-    if(evt.target.id == 'add_todo_btn'){                        
+project_box.addEventListener("click", function(evt){        
+    if(evt.target.id == 'add_todo_btn'){                             
         const projectID = projectTodos.getAttribute('data-projectid');                
         TodoList.projects[projectID].todos.push(new Todo());        
         Project.renderTodo(new Todo());        
@@ -90,4 +101,6 @@ project_box.addEventListener("click", function(evt){
     else if(evt.target.classList.contains('todoCheck')){
         Project.checkTodo(evt.target.parentNode);        
     }
+
+    localStorage.setItem('projects', JSON.stringify(TodoList.projects));    
 });
