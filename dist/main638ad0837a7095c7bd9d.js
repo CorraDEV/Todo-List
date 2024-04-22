@@ -554,9 +554,9 @@ class Project{
     static renderTodo({title, desc, due_date, prio, check}){
         const todoBox = document.createElement('div');
         todoBox.classList.add('todoBox');
-        const projectID = projectTodos.getAttribute('data-projectid');        
-        todoBox.id = _TodoList__WEBPACK_IMPORTED_MODULE_2__["default"].projects[projectID].todos.length;                        
         const projectTodos = document.querySelector('#projectTodos');                        
+        const projectID = projectTodos.getAttribute('data-projectid');        
+        todoBox.id = _TodoList__WEBPACK_IMPORTED_MODULE_2__["default"].projects[projectID].todos.length - 1;                                
         const todoTitle = document.createElement('h3');
         todoTitle.textContent = title;    
         todoTitle.classList.add('todoTitle');        
@@ -580,7 +580,7 @@ class Project{
         projectTodos.appendChild(todoBox);                                    
     }
     
-    static editTodo(todo){
+    static editTodo(todo){        
         todo.style.display = 'none';
         const todoEdit = document.createElement('div');
         todoEdit.classList.add('todoEdit');    
@@ -610,7 +610,7 @@ class Project{
         labelPrio.textContent = 'Priority: ';
         const todoEditPrio = document.createElement('select');        
         todoEditPrio.classList.add('todoEditPrio');
-        const projectID = todo.parentNode.getAttribute('data-projectid');              
+        const projectID = todo.parentNode.getAttribute('data-projectid');                
         const prioValue = _TodoList__WEBPACK_IMPORTED_MODULE_2__["default"].projects[projectID].todos[todo.id].prio;        
         const highPrio = document.createElement('option');
         highPrio.value = 'high';
@@ -676,34 +676,6 @@ class Project{
 
 /***/ }),
 
-/***/ "./src/js/Todo.js":
-/*!************************!*\
-  !*** ./src/js/Todo.js ***!
-  \************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Todo)
-/* harmony export */ });
-class Todo{
-	constructor(
-        title = 'Title',
-        desc = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae, libero similique rerum minima est asperiores repellat harum odit inventore ipsa nam suscipit fuga eos officia tempora sint, aliquid ipsum dicta!',
-        due_date = '21-12-2012',
-        prio = 'Low',
-        check = false
-    ){
-    	this.title = title;
-        this.desc = desc;
-        this.due_date = due_date;
-        this.prio = prio;
-        this.check = check;
-    }
-}
-
-/***/ }),
-
 /***/ "./src/js/TodoList.js":
 /*!****************************!*\
   !*** ./src/js/TodoList.js ***!
@@ -714,36 +686,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ TodoList)
 /* harmony export */ });
-/* harmony import */ var _Project__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Project */ "./src/js/Project.js");
-/* harmony import */ var _img_bin_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../img/bin.png */ "./src/img/bin.png");
-/* harmony import */ var _img_pencil_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../img/pencil.png */ "./src/img/pencil.png");
-
+/* harmony import */ var _img_bin_png__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../img/bin.png */ "./src/img/bin.png");
+/* harmony import */ var _img_pencil_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../img/pencil.png */ "./src/img/pencil.png");
 
 
 
 class TodoList{
     static projects = [];                
 
-    static deleteProject(project){        
+    static deleteProject(project){                
         const projectTodos = document.querySelector('#projectTodos');
+        const projectBox = document.querySelector('#projectBox');
         this.projects.splice(project.id, 1);                
         project.remove(); 
-        projectTodos.innerHTML = '';        
+        if(this.projects.length > 0){
+            projectTodos.innerHTML = '';
+        }        
+        else{
+            projectBox.style.display = 'none';
+        }
     }
 
     static renderSidebarProject({title}){        
         const project = document.createElement('div');
         project.classList.add('project');
-        project.id = this.projects.length;         
+        project.id = this.projects.length - 1;         
         const project_name = document.createElement('span');
         project_name.textContent = title;
         project_name.classList.add('projectName');
         const first_icon = document.createElement('img');
         first_icon.classList.add('projectIcon', 'bin');
-        first_icon.src = _img_bin_png__WEBPACK_IMPORTED_MODULE_1__;
+        first_icon.src = _img_bin_png__WEBPACK_IMPORTED_MODULE_0__;
         const second_icon = document.createElement('img');
         second_icon.classList.add('projectIcon', 'pencil');
-        second_icon.src = _img_pencil_png__WEBPACK_IMPORTED_MODULE_2__;
+        second_icon.src = _img_pencil_png__WEBPACK_IMPORTED_MODULE_1__;
         const add_project = document.querySelector('#add_project_btn');
         add_project.parentNode.insertBefore(project, add_project);
         project.append(project_name, first_icon, second_icon);        
@@ -771,13 +747,15 @@ class TodoList{
         const projectEditName = projectEdit.querySelector('.projectEditName');          
         projectName.textContent = projectEditName.value;        
         project.style.display = 'block';
-        projectEdit.remove();        
+        projectEdit.remove();                           
         this.projects[project.id].title = projectName.textContent;
+        const projectBox = document.querySelector('#projectBox');         
+        projectBox.style.display = 'block';
         const projectTitle = document.querySelector('#projectBox > #projectTitle');         
         projectTitle.textContent = this.projects[project.id].title;        
     }
     
-    static changeProject(project){                                
+    static moveToProject(project){                                
         const projectTodos = document.querySelector('#projectTodos');
         projectTodos.dataset.projectid = project.id;  
         projectTodos.innerHTML = "";
@@ -794,10 +772,10 @@ class TodoList{
             todoTitle.classList.add('todoTitle');        
             const first_icon = document.createElement('img');
             first_icon.classList.add('projectIcon', 'bin');
-            first_icon.src = _img_bin_png__WEBPACK_IMPORTED_MODULE_1__;
+            first_icon.src = _img_bin_png__WEBPACK_IMPORTED_MODULE_0__;
             const second_icon = document.createElement('img');
             second_icon.classList.add('projectIcon', 'pencil');
-            second_icon.src = _img_pencil_png__WEBPACK_IMPORTED_MODULE_2__;
+            second_icon.src = _img_pencil_png__WEBPACK_IMPORTED_MODULE_1__;
             const todoDesc = document.createElement('p');
             todoDesc.classList.add('todoDesc');
             todoDesc.textContent = todo.desc;
@@ -822,6 +800,53 @@ class TodoList{
 
 /***/ }),
 
+/***/ "./src/js/recoverPage.js":
+/*!*******************************!*\
+  !*** ./src/js/recoverPage.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ recoverPage)
+/* harmony export */ });
+/* harmony import */ var _renderSidebar_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./renderSidebar.js */ "./src/js/renderSidebar.js");
+/* harmony import */ var _renderProjectSection_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./renderProjectSection.js */ "./src/js/renderProjectSection.js");
+/* harmony import */ var _TodoList_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TodoList.js */ "./src/js/TodoList.js");
+/* harmony import */ var _Project_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Project.js */ "./src/js/Project.js");
+
+
+
+
+
+function recoverPage(){
+    (0,_renderSidebar_js__WEBPACK_IMPORTED_MODULE_0__["default"])(); 
+    const projects = JSON.parse(localStorage.getItem("projects"));                
+    for(const project of projects){
+        console.log(project);
+        _TodoList_js__WEBPACK_IMPORTED_MODULE_2__["default"].projects.push(project);
+        _TodoList_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSidebarProject(project);
+    }          
+    const currentProjectID = localStorage.getItem("currentProjectID");             
+    const currentProject = projects[currentProjectID];    
+    if(projects.length > 0){
+        (0,_renderProjectSection_js__WEBPACK_IMPORTED_MODULE_1__["default"])(currentProject);        
+        const projectTodos = document.querySelector("#projectTodos");        
+        projectTodos.dataset.projectid = currentProjectID;        
+        const todos = currentProject.todos;        
+        for(const todo of todos){                
+            _Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].renderTodo(todo);            
+        }
+    }
+    else{
+        (0,_renderProjectSection_js__WEBPACK_IMPORTED_MODULE_1__["default"])(new _Project_js__WEBPACK_IMPORTED_MODULE_3__["default"]());
+        const projectBox = document.querySelector("#projectBox");
+        projectBox.style.display = 'none';        
+    }        
+}
+
+/***/ }),
+
 /***/ "./src/js/renderPage.js":
 /*!******************************!*\
   !*** ./src/js/renderPage.js ***!
@@ -835,8 +860,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _renderSidebar_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./renderSidebar.js */ "./src/js/renderSidebar.js");
 /* harmony import */ var _renderProjectSection_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./renderProjectSection.js */ "./src/js/renderProjectSection.js");
 /* harmony import */ var _TodoList_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TodoList.js */ "./src/js/TodoList.js");
-/* harmony import */ var _Todo_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Todo.js */ "./src/js/Todo.js");
-/* harmony import */ var _Project_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Project.js */ "./src/js/Project.js");
+/* harmony import */ var _Project_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Project.js */ "./src/js/Project.js");
+/* harmony import */ var _todo_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./todo.js */ "./src/js/todo.js");
 
 
 
@@ -845,9 +870,11 @@ __webpack_require__.r(__webpack_exports__);
 
 function renderPage(){
     (0,_renderSidebar_js__WEBPACK_IMPORTED_MODULE_0__["default"])();            
-    _TodoList_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSidebarProject(new _Project_js__WEBPACK_IMPORTED_MODULE_4__["default"]());
-    (0,_renderProjectSection_js__WEBPACK_IMPORTED_MODULE_1__["default"])(new _Project_js__WEBPACK_IMPORTED_MODULE_4__["default"]());
-    _Project_js__WEBPACK_IMPORTED_MODULE_4__["default"].renderTodo(new _Todo_js__WEBPACK_IMPORTED_MODULE_3__["default"]());            
+    _TodoList_js__WEBPACK_IMPORTED_MODULE_2__["default"].projects.push(new _Project_js__WEBPACK_IMPORTED_MODULE_3__["default"]());
+    _TodoList_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderSidebarProject(new _Project_js__WEBPACK_IMPORTED_MODULE_3__["default"]());
+    (0,_renderProjectSection_js__WEBPACK_IMPORTED_MODULE_1__["default"])(new _Project_js__WEBPACK_IMPORTED_MODULE_3__["default"]());
+    _TodoList_js__WEBPACK_IMPORTED_MODULE_2__["default"].projects[0].todos.push(new _todo_js__WEBPACK_IMPORTED_MODULE_4__["default"]());
+    _Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].renderTodo(new _todo_js__WEBPACK_IMPORTED_MODULE_4__["default"]());            
 }
 
 /***/ }),
@@ -862,7 +889,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ renderProjectSection)
 /* harmony export */ });
-function renderProjectSection({title, todos}){
+/* harmony import */ var _TodoList__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TodoList */ "./src/js/TodoList.js");
+
+
+function renderProjectSection({title}){
     const add_todo = document.createElement('button');
     add_todo.id = "add_todo_btn";
     add_todo.textContent = "Add Todo";
@@ -873,7 +903,7 @@ function renderProjectSection({title, todos}){
     projectTitle.textContent = title;
     const projectTodos = document.createElement('div');
     projectTodos.id = 'projectTodos';
-    projectTodos.dataset.projectid = this.projects.length - 1;                
+    projectTodos.dataset.projectid = _TodoList__WEBPACK_IMPORTED_MODULE_0__["default"].projects.length - 1;                
     projectBox.append(projectTitle, add_todo, projectTodos);    
     document.body.appendChild(projectBox);                        
 }
@@ -8319,34 +8349,40 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _css_style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./css/style.css */ "./src/css/style.css");
 /* harmony import */ var _js_renderPage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./js/renderPage.js */ "./src/js/renderPage.js");
-/* harmony import */ var _js_Project_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./js/Project.js */ "./src/js/Project.js");
-/* harmony import */ var _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./js/TodoList.js */ "./src/js/TodoList.js");
+/* harmony import */ var _js_recoverPage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./js/recoverPage.js */ "./src/js/recoverPage.js");
+/* harmony import */ var _js_Project_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./js/Project.js */ "./src/js/Project.js");
+/* harmony import */ var _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./js/TodoList.js */ "./src/js/TodoList.js");
+/* harmony import */ var _js_todo_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./js/todo.js */ "./src/js/todo.js");
 
 
 
 
 
-(0,_js_renderPage_js__WEBPACK_IMPORTED_MODULE_1__["default"])();
-const projectID = projectTodos.getAttribute('data-projectid');                
-_js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].projects.push(new _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"]());
-_js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].projects[projectID].todos.push(new Todo());
+
+
+if(localStorage.getItem("projects")){
+    (0,_js_recoverPage_js__WEBPACK_IMPORTED_MODULE_2__["default"])();    
+}
+else{
+    (0,_js_renderPage_js__WEBPACK_IMPORTED_MODULE_1__["default"])();
+}
 
 const sidebar = document.querySelector("#sidebar");
-sidebar.addEventListener("click", function(evt){
-    if(evt.target.id == 'add_project_btn'){        
-        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].projects.push(new _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"]());
-        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].addProject(new _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"]());                        
-        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].editProject(evt.target.previousElementSibling);        
+sidebar.addEventListener("click", function(evt){            
+    if(evt.target.id == 'add_project_btn'){                        
+        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].projects.push(new _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"]());
+        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].renderSidebarProject(new _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"]());                        
+        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].editProject(evt.target.previousElementSibling);                                
     }    
     else if(evt.target.classList.contains('bin')){
         const projectSidebarID = evt.target.parentNode.id;        
-        let previousProjectSidebar = undefined;
+        let previousProjectSidebar = null;
         
         if(projectSidebarID > 0){
             previousProjectSidebar = evt.target.parentNode.previousElementSibling;        
         }               
         const nextProjectSidebar = evt.target.parentNode.nextElementSibling;
-        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].deleteProject(evt.target.parentNode);                                        
+        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].deleteProject(evt.target.parentNode);                                        
         
         if(nextProjectSidebar.id != 'add_project_btn'){
             nextProjectSidebar.id = nextProjectSidebar.id - 1;
@@ -8360,63 +8396,71 @@ sidebar.addEventListener("click", function(evt){
             while(ele.id != 'add_project_btn');                    
         }                                                
         
-        if(_js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].projects.length >= 1){
+        if(_js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].projects.length > 0){
             if(previousProjectSidebar){
-                _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].changeProject(previousProjectSidebar);        
+                _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].moveToProject(previousProjectSidebar);        
             }
             else{
-                _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].changeProject(nextProjectSidebar);        
+                _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].moveToProject(nextProjectSidebar);        
             }            
         }                
     }            
     else if(evt.target.classList.contains('pencil')){         
-        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].editProject(evt.target.parentNode);
+        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].editProject(evt.target.parentNode);
         const button = evt.target.parentNode.previousElementSibling.querySelector('.editProjectName');
         button.dataset.editOnly = 'Yes';                        
     }
     else if(evt.target.classList.contains('editProjectName')){        
         if(evt.target.dataset.editOnly == 'Yes'){
-            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].applyEditProject(evt.target.parentNode);                    
+            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].applyEditProject(evt.target.parentNode);                    
         }
         else{
             const nextProject = evt.target.parentNode.nextElementSibling;
-            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].applyEditProject(evt.target.parentNode);            
-            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].changeProject(nextProject);                        
-            _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderTodo({});
+            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].applyEditProject(evt.target.parentNode);            
+            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].moveToProject(nextProject);                        
+            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].projects[nextProject.id].todos.push(new _js_todo_js__WEBPACK_IMPORTED_MODULE_5__["default"]());
+            _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].renderTodo(new _js_todo_js__WEBPACK_IMPORTED_MODULE_5__["default"]());
         }        
     }
     else if(evt.target.classList.contains('project') || evt.target.classList.contains('projectName')){
         if(evt.target.classList.contains('project')){
-            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].changeProject(evt.target);
+            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].moveToProject(evt.target);
         }
         else{
-            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].changeProject(evt.target.parentNode);
+            _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].moveToProject(evt.target.parentNode);
         }          
     }
+    
+    let currentProjectID = document.querySelector('#projectTodos').getAttribute('data-projectid'); 
+    localStorage.setItem('projects', JSON.stringify(_js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].projects));
+    localStorage.setItem('currentProjectID', currentProjectID);
 });
 
 const project_box = document.querySelector("#projectBox");
-project_box.addEventListener("click", function(evt){    
-    if(evt.target.id == 'add_todo_btn'){                                
-        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_3__["default"].projects[projectID].todos.push(new Todo());        
-        _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"].renderTodo(new Todo());        
-        _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"].editTodo(evt.target.nextElementSibling.lastChild);         
+project_box.addEventListener("click", function(evt){        
+    if(evt.target.id == 'add_todo_btn'){                             
+        const projectID = projectTodos.getAttribute('data-projectid');                
+        _js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].projects[projectID].todos.push(new _js_todo_js__WEBPACK_IMPORTED_MODULE_5__["default"]());        
+        _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].renderTodo(new _js_todo_js__WEBPACK_IMPORTED_MODULE_5__["default"]());        
+        _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].editTodo(evt.target.nextElementSibling.lastChild);         
     }
     else if(evt.target.classList.contains('bin')){
-        _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"].deleteTodo(evt.target.parentNode);        
+        _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].deleteTodo(evt.target.parentNode);        
     }
     else if(evt.target.classList.contains('pencil')){
-        _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"].editTodo(evt.target.parentNode);
+        _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].editTodo(evt.target.parentNode);
     }
     else if(evt.target.classList.contains('editTodo')){
-        _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"].applyEditTodo(evt.target.parentNode);        
+        _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].applyEditTodo(evt.target.parentNode);        
     }
     else if(evt.target.classList.contains('todoCheck')){
-        _js_Project_js__WEBPACK_IMPORTED_MODULE_2__["default"].checkTodo(evt.target.parentNode);        
+        _js_Project_js__WEBPACK_IMPORTED_MODULE_3__["default"].checkTodo(evt.target.parentNode);        
     }
+
+    localStorage.setItem('projects', JSON.stringify(_js_TodoList_js__WEBPACK_IMPORTED_MODULE_4__["default"].projects));    
 });
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=main86a1303bea16404a65aa.js.map
+//# sourceMappingURL=main638ad0837a7095c7bd9d.js.map
